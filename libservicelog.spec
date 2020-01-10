@@ -1,6 +1,6 @@
 Name:           libservicelog
 Version:        1.1.13
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        Servicelog Database and Library
 
 Group:          System Environment/Libraries
@@ -14,7 +14,7 @@ Requires(pre):       shadow-utils
 BuildRequires:  sqlite-devel autoconf libtool bison librtas-devel flex
 
 # because of librtas-devel
-ExclusiveArch: ppc ppc64
+ExclusiveArch: ppc ppc64 ppc64le
 
 
 # Link with needed libraries
@@ -68,8 +68,9 @@ getent group service >/dev/null || /usr/sbin/groupadd service
 %defattr(-,root,root,-)
 %doc COPYING NEWS AUTHORS
 %{_libdir}/libservicelog-*.so.*
-%ghost %verify(not md5 size mtime) %attr(644,root,service) %dir /var/lib/servicelog/servicelog.db
-%dir /var/lib/servicelog
+%dir %attr(755, root, service) /var/lib/servicelog
+%verify(not md5 size mtime) %attr(644,root,service) /var/lib/servicelog/servicelog.db
+%config(noreplace) /var/lib/servicelog/servicelog.db
 
 %files devel
 %defattr(-,root,root,-)
@@ -79,6 +80,13 @@ getent group service >/dev/null || /usr/sbin/groupadd service
 
 
 %changelog
+* Wed Jan 08 2014 Phil Knirsch <pknirsch@redhat.com> - 1.1.13-3
+- Fixed build issue
+Resolves: rhbz#1048877
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 1.1.13-2
+- Mass rebuild 2013-12-27
+
 * Sat May 18 2013 Vasant Hegde <hegdevasant@fedoraproject.org> - 1.1.13
 - Update to latest upstream 1.1.13
 
